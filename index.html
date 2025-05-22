@@ -1,0 +1,1024 @@
+<!--©Author: Youssef Mellouli
+E-mail:mellouliyoussef@live.fr
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects Dashboard</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            width: 300px;
+            font-size: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            background-color: var(--light);
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--gray-100);
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            background-color: var(--light);
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn:hover {
+            background-color: var(--gray-100);
+        }
+
+        .view-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .projects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .category-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .projects-list {
+            padding: 1rem;
+        }
+
+        .project-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .project-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .project-date {
+            background-color: var(--gray-200);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .project-tech {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .progress-container {
+            height: 8px;
+            background-color: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .progress-completed {
+            width: 100%;
+            background-color: var(--success);
+        }
+
+        .progress-in-progress {
+            width: 50%;
+            background-color: var(--warning);
+        }
+
+        .progress-planned {
+            width: 25%;
+            background-color: var(--secondary);
+        }
+
+        .project-description {
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
+            color: var(--secondary);
+        }
+
+        .github-link {
+            display: inline-block;
+            margin-top: 0.75rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .github-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .chart-container {
+            display: none;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .chart-container.active {
+            display: block;
+        }
+
+        .project-list-view {
+            display: block;
+        }
+
+        .project-list-view.hidden {
+            display: none;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .legend-completed {
+            background-color: var(--success);
+        }
+
+        .legend-in-progress {
+            background-color: var(--warning);
+        }
+
+        .legend-planned {
+            background-color: var(--secondary);
+        }
+        .task-toggle {
+    background-color: var(--light);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 0;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.task-toggle:hover {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary-dark);
+}
+.project-actions {
+    display: flex;
+    justify-content: space-between; /* Evenly distribute space */
+    align-items: center; /* Vertically center if needed */
+    margin-top: 0.75rem; /* Match existing margin */
+    gap: 1rem; /* Add some space between items */
+}
+
+.task-list {
+    max-height: 100px; /* Adjust as needed */
+    overflow-y: auto;
+    margin-top: 0.5rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    display: none; /* Initially hidden */
+}
+
+.task-list ul {
+    list-style-type: none;
+    padding: 0.5rem;
+    margin: 0;
+}
+
+.task-list li {
+    margin-bottom: 0.25rem;
+    padding: 0.25rem 0;
+    border-bottom: 2px solid var(--gray-300);
+}
+
+.task-list li:last-child {
+    border-bottom: none;
+}
+
+.task-list.active {
+    display: block; /* Show when active */
+}
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .filter-group {
+                flex-wrap: wrap;
+            }
+
+            .projects-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Projekt-Dashboard</h1>
+            <p class="subtitle">Interaktive Übersicht über meine  Projekte und Erfahrungen</p>
+        </header>
+
+        <div class="controls">
+            <input type="text" class="search-box" placeholder="Projekte suchen...">
+
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">Alle</button>
+                <button class="filter-btn" data-filter="web">Web-Entwicklung</button>
+                <button class="filter-btn" data-filter="mobile">Mobile Apps</button>
+                <button class="filter-btn" data-filter="backend">Systeme und Werkzeuge</button>
+                <button class="filter-btn" data-filter="other">Sonstige</button>
+            </div>
+
+            <div class="view-toggle">
+                <button id="list-btn" class="view-btn active" data-view="list">Liste</button>
+                <button id="chart-btn" class="view-btn" data-view="chart">Diagramm</button>
+            </div>
+        </div>
+
+        <div class="chart-container" id="chart">
+            <canvas id="projectsChart" width="400" height="300"></canvas>
+        </div>
+
+        <div class="project-list-view">
+            <div class="projects-container">
+                <!-- Web Development Projects -->
+                <div class="category" data-category="web">
+                    <div class="category-header">Web-Entwicklung</div>
+                    <div class="projects-list">
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Feedbacksystem (<a target="_blank" class="github-link" href="https://frits.mni.thm.de/#team" title="Projektseite">FRITS</a>)</span>
+                                <span class="project-date">2024</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">Scala</span>
+                                <span class="tech-tag">Kotlin</span>
+                                <span class="tech-tag">MySQL</span>
+                                <span class="tech-tag">Spring Boot</span>
+                                <span class="tech-tag">Angular</span>
+                            </div>
+                            <p class="project-description">Ein intelligentes Tutorensystem, das KI- und Data-Mining-Methoden einsetzt, um Lehr- und Lernerfahrungen zu optimieren. Es ermöglicht Dozenten, Aufgaben mit verschiedenen Medientypen zu erstellen und bietet personalisiertes Feedback für Studenten.</p>
+                            <div class="project-actions">
+                            <a href="https://github.com/thm-mni-ii/feedbacksystem" target="_blank" class="github-link">GitHub Repository</a>
+                            <button class="task-toggle">Aufgaben</button>
+                        </div>
+                            <div class="task-list">  <ul>
+            <li>Verbesserung des Feedback-Mechanismus im Backend für Excel-Übungen, einschließlich detaillierter Analysen zu fehlerhaften Variablen, Operatoren oder Funktionen, um personalisiertes Feedback für Studenten zu ermöglichen</li>
+            <li>Fehlerbehebung zur Verbesserung der Benutzererfahrung</li>
+            <li>Erweiterung und Verbesserung der benutzerfreundlichen Oberfläche mit Angular und TypeScript, um eine moderne und intuitive Benutzererfahrung zu gewährleisten.</li>
+            <li>Optimierung und Erweiterung der serverseitigen Funktionen mit dem Spring-Web-Framework und Scala, um die Skalierbarkeit und Effizienz des Systems zu verbessern.</li>
+            </ul>
+    </div>
+                        </div>
+
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">eWill: Datenbank-Modellierungswerkzeug</span>
+                                <span class="project-date">2023-2024</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">TypeScript</span>
+                                <span class="tech-tag">Kotlin</span>
+                                <span class="tech-tag">Vue</span>
+                                <span class="tech-tag">MySQL</span>
+                            </div>
+                            <p class="project-description">Ein Werkzeug, das speziell zur Erleichterung der Datenbankmodellierung entwickelt wurde, insbesondere von Entity-Relationship-Diagrammen (ERD) und Structured-Entity-Relationship-Model (SERM)-Diagrammen. Bietet automatisiertes Feedback zu Studenteneinsendungen.</p>
+                            <div class="project-actions">
+                            <a href="https://github.com/thm-mnd-ii/eWiLL" target="_blank" class="github-link">GitHub Repository</a>
+                            <button class="task-toggle">Aufgaben</button>
+                        </div>
+                            <div class="task-list">  <ul>
+            <li>Nutzung von Label Studio zur Modellierung und KI-Training anhand alter Studenten
+                Einreichungen</li>
+            <li>Mitwirkung an der Entwicklung eines Online-Tools zur Erstellung vom SERM- und
+                ERD-Diagrammen unter Verwendung von Vue und Typescript</li>
+            <li>Erweiterung und Optimierung der Datenbankstruktur durch Anpassung bestehender
+                Datenmodelle in MySQL. Dies wurde im Backend mit Kotlin umgesetzt, um
+                zusätzliche Funktionalitäten zu integrieren und eine verbesserte Datenverwaltung zu
+                gewährleisten.</li>
+            </ul>
+    </div>
+                        </div>
+
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Vier-Gewinnt-Spiel</span>
+                                <span class="project-date">2021</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">Java</span>
+                                <span class="tech-tag">HTML</span>
+                                <span class="tech-tag">CSS</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">Javalin</span>
+                            </div>
+                            <p class="project-description">Ein interaktives Online-Vier-Gewinnt-Spiel, das es Benutzern ermöglicht, gegen einen KI-Gegner zu spielen, der den Minimax-Algorithmus für strategische Entscheidungsfindung verwendet. Bietet eine intuitive Benutzeroberfläche und reaktionsschnelle Steuerung.</p>
+                            <div class="project-actions">
+                            <a href="https://github.com/ymll58/connect4" target="_blank" class="github-link">GitHub Repository</a>
+                            <button class="task-toggle">Aufgaben</button>
+                        </div>
+                            <div class="task-list">  <ul>
+            <li>Entwicklung einer leistungsstarken KI mit Entscheidungsfindung auf Basis des Minimax-Algorithmus, die strategisch agiert und das Spielverhalten eines menschlichen Gegners simuliert.</li>
+            <li>Erstellung eines ansprechenden und benutzerfreundlichen Frontend unter Verwendung von HTML, CSS und JavaScript, um eine intuitive Benutzerinteraktion zu gewährleisten.</li>
+            <li>Aufbau einer robusten Server-Logik mit Java und Javalin zur Unterstützung der Spielmechanik und reibungslosen Kommunikation zwischen Frontend und Backend.</li>
+            </ul>
+    </div>
+                        </div>
+
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">EBay-Klon</span>
+                                <span class="project-date">Geplant 2025</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-planned"></div> <!-- Not started yet -->
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">Angular</span>
+                                <span class="tech-tag">Java</span>
+                                <span class="tech-tag">Spring Boot</span>
+                                <span class="tech-tag">MySQL</span>
+                                <span class="tech-tag">JWT Authentication</span>
+                                <span class="tech-tag">REST API</span>
+                            </div>
+                            <p class="project-description">
+                                Geplante Entwicklung eines vereinfachten Marktplatzes im eBay-Stil, auf dem Benutzer Artikel anbieten, suchen und kaufen können. Das Projekt wird ein reaktionsschnelles Frontend, sichere Authentifizierung, RESTful APIs und relationale Datenbankverwaltung umfassen
+                            </p>
+                        </div>
+                        
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Online Galgenmännchen-Spiel</span>
+                                <span class="project-date">Geplant 2025</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-in-progress"></div> <!-- Not started yet -->
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">Angular</span>
+                                <span class="tech-tag">Java</span>
+                                <span class="tech-tag">Spring Boot</span>
+                                <span class="tech-tag">MySQL</span>
+                                <span class="tech-tag">WebSockets</span>
+                                <span class="tech-tag">JWT Authentication</span>
+                            </div>
+                            <p class="project-description">
+                                Geplante Entwicklung eines Online-Hangman-Spiels mit Echtzeit-Multiplayer-Funktionen, Benutzerauthentifizierung und globalen Bestenlisten. Das Backend wird Spielsitzungen, Punktzahlverwaltung und Benutzerverwaltung sicher über REST-APIs und WebSocket-Kommunikation abwickeln.
+                            </p>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Mobile App Projects -->
+                <div class="category" data-category="mobile">
+                    <div class="category-header">Mobile Apps</div>
+                    <div class="projects-list">
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Training-App</span>
+                                <span class="project-date">2022</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">Swift</span>
+                                <span class="tech-tag">Xcode</span>
+                                <span class="tech-tag">Firebase</span>
+                                <span class="tech-tag">Figma</span>
+                            </div>
+                            <p class="project-description">iOS-Trainingsanwendung, die entwickelt wurde, um Benutzern zu helfen, ihre Fitnessziele zu erreichen, indem sie verschiedene Übungen anzeigt und ihren Fortschritt verfolgt. Bietet eine große Auswahl an Übungen für verschiedene Muskelgruppen mit Videoanleitungen.</p>
+                            <div class="project-actions">
+                            <a href="https://github.com/ymll58/Workout-App" target="_blank" class="github-link">GitHub Repository</a>
+                            <button class="task-toggle">Aufgaben</button>
+                        </div>
+                            <div class="task-list">  <ul>
+            <li>Gestaltung eines klar strukturierten und intuitiven User-Interface-Designs für die App mit Figma, unter Berücksichtigung der Benutzererfahrung und der App-Funktionalitäten.</li>
+            <li>Implementierung des Frontends mit Xcode, einschließlich der Integration dynamischer UI-Elemente und einer reibungslosen Nutzerinteraktion.</li>
+            <li>Einbindung von Firebase als Backend-Lösung zur Verwaltung der Datenbank, Authentifizierung und Synchronisation von App-Daten.</li>
+            <li>Erstellung und Einpflege einer umfangreichen Sammlung von Übungen, die klar beschrieben sind und von unterstützenden Videos begleitet werden, um die Benutzer beim korrekten Ausführen der Übungen zu unterstützen.</li>
+            </ul>
+    </div>
+                        </div>
+
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Hybrid Mobile Quiz App</span>
+                                <span class="project-date">2022-2023</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">TypeScript</span>
+                                <span class="tech-tag">Ionic</span>
+                                <span class="tech-tag">Firebase</span>
+                                <span class="tech-tag">Android Studio</span>
+                            </div>
+                            <p class="project-description">Eine interaktive Lern- und Quiz-App, die es Benutzern ermöglicht, Wissen in verschiedenen Bereichen zu erwerben. Bietet zwei Modi - einen Lernmodus für gezielten Wissenserwerb und einen Quizmodus mit steigenden Schwierigkeitsstufen. Enthält ein Fortschrittsverfolgungssystem.</p>
+                            <div class="project-actions">
+                               <div></div> <!--assures the right alignment of the button when  the link is not available-->
+                                <button class="task-toggle">Aufgaben</button>
+                            </div>
+                                <div class="task-list">  <ul>
+                <li>Implementierung eines Benutzerkonto-Systems, mit dem Benutzer Themen auswählen und Fortschritte speichern können.</li>
+                <li>Nutzung von Firebase für Benutzerverwaltung und Datenspeicherung.</li>
+                <li>Gestaltung einer intuitiven und ansprechenden Benutzeroberfläche zur Verbesserung der Nutzererfahrung.</li>
+                </ul>
+        </div>
+                        
+                        </div>
+
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Getränkemaschine-Steuerungs-App</span>
+                                <span class="project-date">2023</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">Kotlin</span>
+                                <span class="tech-tag">C++</span>
+                                <span class="tech-tag">HiveMQ</span>
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Android Studio</span>
+                            </div>
+                            <p class="project-description">Mobile Anwendung zur Steuerung einer automatisierten Getränkezubereitungsmaschine. Benutzer können Getränketypen und -größen über die Android-App auswählen, die über MQTT (HiveMQ) mit der Hardware kommuniziert.<a href="https://drive.google.com/file/d/1ABk0oDo1UVvRE0KKM5ujajaTXTCoPzrD/view" target="_blank" > (Demo)</a></p>
+                            <div class="project-actions">
+                            <a href="https://github.com/ymll58/Getraenkemaschine" target="_blank" class="github-link">GitHub Repository</a>
+                            <button class="task-toggle">Aufgaben</button>
+                        </div>
+                            <div class="task-list">  <ul>
+            <li>Entwerfen und Implementieren der Benutzeroberfläche der Android-App mit Kotlin und Android Studio. Dies umfasst die Getränkeauswahl, Größenoptionen und die Anzeige des Zubereitungsstatus. Implementieren der Logik zur Benutzerinteraktion und Datenverarbeitung innerhalb der App.</li>
+            <li>Einrichten und Konfigurieren der MQTT-Kommunikation zwischen der Android-App und der Getränkezubereitungsmaschine unter Verwendung von HiveMQ. Implementieren der Funktionalität zum Senden von Befehlen (z.B., Getränkeauswahl, Größe) von der App an die Maschine und zum Empfangen von Statusaktualisierungen von der Maschine zur App.</li>
+            <li>Integrieren der Android-App mit der Getränkezubereitungsmaschine über die MQTT-Kommunikation. Durchführen von Tests des Gesamtsystems, um die korrekte Funktionalität der App, die zuverlässige Kommunikation mit der Maschine und die Einhaltung der Benutzeranforderungen sicherzustellen.</li>
+            </ul>
+    </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend Systems -->
+                <div class="category" data-category="backend">
+                    <div class="category-header">Systeme und Werkzeuge</div>
+                    <div class="projects-list">
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Ninja Virtuelle Maschine</span>
+                                <span class="project-date">2022</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">C</span>
+                                <span class="tech-tag">Assembly</span>
+                            </div>
+                            <p class="project-description">Eine virtuelle Maschine (in C programmiert), ähnlich der von Java verwendeten, die Bytecode-Anweisungen einer Programmiersprache namens "Ninja" ausführt. Verwaltet Speicher, Garbage Collection und die Laufzeitumgebung für ausgeführte Programme.</p>
+                            <div class="project-actions">
+                            <a href="https://github.com/ymll58/Virtual-machine" target="_blank" class="github-link">GitHub Repository</a>
+                            <button class="task-toggle">Aufgaben</button>
+                        </div>
+                            <div class="task-list">  <ul>
+            <li>Entwickeln des Speichersubsystems zur Allokation und Verwaltung von Speicher. Auswählen und Implementieren eines Garbage-Collection-Algorithmus ( Mark and Sweep) zur automatischen Freigabe von nicht mehr verwendetem Speicher.</li>
+            <li>Definieren des Befehlssatzes (Opcodes), der Speicherstruktur (Heap, Stack), der Register und der Ausführungsschleife der VM. Implementieren des Befehlsdecoders und der grundlegenden Speicherverwaltung.</li>
+            <li>Integrieren des Befehlsdecoders, der Ausführungsschleife und des Speichersubsystems. Entwickeln von Testfällen in der "Ninja"-Sprache zur Überprüfung der Funktionalität der VM.</li>
+            </ul>
+    </div>
+                        </div>
+
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Verschlüsselungsprogramm</span>
+                                <span class="project-date">2021</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">Java</span>
+                                <span class="tech-tag">JUnit</span>
+                            </div>
+                            <p class="project-description">Java-basierte Desktop-Anwendung, die eine benutzerfreundliche Oberfläche zum Ver- und Entschlüsseln von Texten unter Verwendung zweier gängiger Verschlüsselungsmethoden bietet: der Caesar-Verschlüsselungsmethode und der Double-Cube-Chiffre (Doppelspaltentransposition).</p>
+                            <div class="project-actions">
+                            <a href="https://github.com/ymll58/message-encryption" target="_blank" class="github-link">GitHub Repository</a>
+                            <button class="task-toggle">Aufgaben</button>
+                        </div>
+                            <div class="task-list">  <ul>
+            <li>Implementierung der Algorithmen für das Caesar-Verschlüsselungsverfahren und die Doppelwürfel-Chiffre, einschließlich der Anpassung an Benutzerparameter wie Verschiebungswert und Schlüsselwörter.</li>
+            <li>Entwicklung einer benutzerfreundlichen Desktop-Oberfläche zur einfachen Eingabe von Texten und Auswahl der Verschlüsselungsmethode.</li>
+            <li>Durchführung umfassender Tests zur Gewährleistung der Funktionsfähigkeit und Sicherheit der Verschlüsselung und Entschlüsselung.</li>
+            </ul>
+    </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Projects -->
+                <div class="category" data-category="other">
+                    <div class="category-header">Sonstige</div>
+                    <div class="projects-list">
+                        <div class="project-item">
+                            <div class="project-header">
+                                <span class="project-name">Automatischer Getränkeautomat</span>
+                                <span class="project-date">2023</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-completed"></div>
+                            </div>
+                            <div class="project-tech">
+                                <span class="tech-tag">C++</span>
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">MQTT</span>
+                                <span class="tech-tag">Hardware</span>
+                            </div>
+                            <p class="project-description">Hardwareimplementierung einer automatisierten Getränkezubereitungsmaschine, die von einem Mikrocontroller und mehreren Sensoren gesteuert wird. Die Hardware wurde entwickelt, um grundlegende Zubereitungsaufgaben durchzuführen, gesteuert von einem C++-Programm.<a href="https://drive.google.com/file/d/1ABk0oDo1UVvRE0KKM5ujajaTXTCoPzrD/view" target="_blank" > (Demo)</a></p>
+                            <div class="project-actions">
+                            <a href="https://github.com/ymll58/Getraenkemaschine" target="_blank" class="github-link">GitHub Repository</a>
+                            <button class="task-toggle">Aufgaben</button>
+                        </div>
+                            <div class="task-list">  <ul>
+                                <li>Unterstützung Beim Aufbau Der Maschine</li>
+                                <li>Entwickeln der Firmware für den Mikrocontroller in C++, um die Maschinensteuerung zu implementieren. Dies umfasst das Schreiben von Code zur Verarbeitung von Sensordaten, zur Steuerung von Aktoren, zur Implementierung von Sicherheitsmechanismen und zur Handhabung der Kommunikation.</li>
+                                <li>Implementieren der MQTT-Kommunikation, um die Maschine mit anderen Systemen oder Geräten zu verbinden. Dies umfasst die Einrichtung der MQTT-Kommunikation auf dem Mikrocontroller und die Definition der Nachrichtenformate und -themen.</li>                    
+            </ul>
+    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color legend-planned"></div>
+                <span>Geplant</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color legend-in-progress"></div>
+                <span>In Bearbeitung</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color legend-completed"></div>
+                <span>Abgeschlossen</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script>
+        // DOM Elements
+        const searchBox = document.querySelector('.search-box');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const viewButtons = document.querySelectorAll('.view-btn');
+        const categories = document.querySelectorAll('.category');
+        const projectItems = document.querySelectorAll('.project-item');
+        const chartContainer = document.getElementById('chart');
+        const projectListView = document.querySelector('.project-list-view');
+
+        // Function to show "No Results" message
+        function showNoResultsMessage(searchTerm) {
+            const noResultsMessageId = 'no-search-results-message';
+            const existingMessage = document.getElementById(noResultsMessageId);
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            const noResultsParagraph = document.createElement('p');
+            noResultsParagraph.textContent = `Ihre Suche nach "${searchTerm}" ergab keine Ergebnisse.`;
+            noResultsParagraph.id = noResultsMessageId;
+            noResultsParagraph.style.textAlign = 'center';
+            noResultsParagraph.style.padding = '2rem';
+            noResultsParagraph.style.color = 'var(--secondary)';
+            noResultsParagraph.style.fontSize = '1.2rem';
+            projectListView.appendChild(noResultsParagraph);
+        }
+
+        // Search functionality
+        searchBox.addEventListener('input', function() {
+            const searchTerm = this.value.trim().toLowerCase();
+            let visibleCategoryCount = 0;
+            let visibleProjectCount = 0;
+
+            // Remove any existing "No Results" message
+            const noResultsMessageId = 'no-search-results-message';
+            const existingMessage = document.getElementById(noResultsMessageId);
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            projectItems.forEach(item => {
+                const projectName = item.querySelector('.project-name').textContent.toLowerCase();
+                const projectDesc = item.querySelector('.project-description').textContent.toLowerCase();
+                const techTags = Array.from(item.querySelectorAll('.tech-tag')).map(tag => tag.textContent.toLowerCase());
+                
+                if (projectName.includes(searchTerm) || 
+                    projectDesc.includes(searchTerm) || 
+                    techTags.some(tag => tag.includes(searchTerm))) {
+                    item.style.display = 'block';
+                    visibleProjectCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            categories.forEach(category => {
+                const visibleProjects = Array.from(category.querySelectorAll('.project-item')).filter(item =>
+                    item.style.display !== 'none');
+                if (visibleProjects.length === 0 && searchTerm !== '') {
+                    category.style.display = 'none';
+                } else {
+                    category.style.display = 'block';
+                    visibleCategoryCount++;
+                }
+            });
+
+            // Show "No Results" message if needed
+            if (projectListView.style.display !== 'none' && searchTerm !== '' && visibleProjectCount === 0) {
+                showNoResultsMessage(searchTerm);
+            }
+        });
+
+        // Filter functionality
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.getAttribute('data-filter');
+
+                categories.forEach(category => {
+                    if (filter === 'all') {
+                        category.style.display = 'block';
+                    } else if (category.getAttribute('data-category') === filter) {
+                        category.style.display = 'block';
+                    } else {
+                        category.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // View toggle functionality
+        viewButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active button
+                viewButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const view = this.getAttribute('data-view');
+                const legend = document.querySelector('.legend');
+                const allFilterButton = document.querySelector('.filter-btn[data-filter="all"]');
+
+                if (view === 'list') {
+                    chartContainer.style.display = 'none';
+                    projectListView.style.display = 'block';
+                    legend.style.display = 'flex';
+                    
+                    // Enable filters and search
+                    filterButtons.forEach(button => button.disabled = false);
+                    filterButtons.forEach(button => button.style.cursor = 'pointer');
+                    searchBox.style.cursor = 'text';
+                    searchBox.disabled = false;
+                    
+                    // Reset search and filters
+                    searchBox.value = '';
+                    projectItems.forEach(item => item.style.display = 'block');
+                    categories.forEach(category => category.style.display = 'block');
+                    
+                    filterButtons.forEach(btn => btn.classList.remove('active')); 
+                    if (allFilterButton) {
+                        allFilterButton.classList.add('active'); 
+                    }
+                    
+                    // Trigger search input event to show all projects
+                    searchBox.dispatchEvent(new Event('input'));
+                    
+                } else if (view === 'chart') {
+                    legend.style.display = 'none';
+                    chartContainer.style.display = 'block';
+                    projectListView.style.display = 'none';
+                    renderChart();
+                    
+                    // Disable filters and search
+                    filterButtons.forEach(button => button.disabled = true);
+                    filterButtons.forEach(button => button.classList.remove('active'));
+                    filterButtons.forEach(button => button.style.cursor = 'not-allowed');
+                    searchBox.style.cursor = 'not-allowed';
+                    searchBox.value = '';
+                    searchBox.disabled = true;
+                    
+                    // Reset display
+                    categories.forEach(category => category.style.display = 'block');
+                    projectItems.forEach(item => item.style.display = 'block');
+                    
+                    // Remove any no results message
+                    const noResultsMessageId = 'no-search-results-message';
+                    const existingMessage = document.getElementById(noResultsMessageId);
+                    if (existingMessage) {
+                        existingMessage.remove();
+                    }
+                }
+            });
+        });
+        //toggle the tasks 
+        const taskToggles = document.querySelectorAll('.task-toggle');
+
+        taskToggles.forEach(toggle => {
+       toggle.addEventListener('click', function() {
+           const taskList = this.closest('.project-item').querySelector('.task-list');
+           taskList.classList.toggle('active');
+
+           // Change button text based on the 'active' class
+           if (taskList.classList.contains('active')) {
+               this.textContent = 'Aufgaben ausblenden';
+           } else {
+               this.textContent = 'Aufgaben';
+           }
+       });
+   });
+
+        // Function to prepare chart data
+        function getChartData() {
+            const categories = ['Web-Entwicklung', 'Mobile Apps', 'Systeme und Werkzeuge', 'Sonstige'];
+            const statusCounts = {
+                'Completed': [0, 0, 0, 0],
+                'In Progress': [0, 0, 0, 0],
+                'Planned': [0, 0, 0, 0]
+            };
+            
+            projectItems.forEach(item => {
+                const category = item.closest('.category').querySelector('.category-header').textContent;
+                const progressBar = item.querySelector('.progress-bar');
+                let status;
+                
+                if (progressBar.classList.contains('progress-completed')) {
+                    status = 'Completed';
+                } else if (progressBar.classList.contains('progress-in-progress')) {
+                    status = 'In Progress';
+                } else if (progressBar.classList.contains('progress-planned')) {
+                    status = 'Planned';
+                }
+                
+                const categoryIndex = categories.indexOf(category);
+                if (categoryIndex !== -1 && status) {
+                    statusCounts[status][categoryIndex]++;
+                }
+            });
+
+            return { categories, statusCounts };
+        }
+
+        // Function to render chart
+        let projectsChartInstance = null;
+
+        function renderChart() {
+            const projectsChartCanvas = document.getElementById('projectsChart').getContext('2d');
+            const { categories, statusCounts } = getChartData();
+
+            // Destroy existing chart if it exists
+            if (projectsChartInstance) {
+                projectsChartInstance.destroy();
+            }
+
+            projectsChartInstance = new Chart(projectsChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: categories,
+                    datasets: [
+                        {
+                            label: 'Abgeschlossen',
+                            data: statusCounts['Completed'],
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'In Bearbeitung',
+                            data: statusCounts['In Progress'],
+                            backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                            borderColor: 'rgba(245, 158, 11, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Geplant',
+                            data: statusCounts['Planned'],
+                            backgroundColor: 'rgba(100, 116, 139, 0.8)',
+                            borderColor: 'rgba(100, 116, 139, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Projekt-Kategorien'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Anzahl der Projekte'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Projects by Category and Status',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+        
+
+        // Initial state
+        chartContainer.style.display = 'none';
+        projectListView.style.display = 'block';
+    </script>
+</body>
+</html>
